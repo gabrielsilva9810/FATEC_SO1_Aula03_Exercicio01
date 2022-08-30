@@ -113,46 +113,25 @@ public class RedesController {
 
 		// UTILIZAÇÃO DOS COMANDOS - PINGAR
 		if (os.contains("Win")) {
+
+			// ------------------------------------VALIDACAO WINDOWS
 			chamada = "PING -4 -n 10 www.google.com.br"; // WINDOWS
-			
-		} else {
-			chamada = "PING -4 -c 10 www.google.com.br"; // LINUX
-		}
 
-		try {
+			try {
 
-			Process p = Runtime.getRuntime().exec(chamada); // ENQUANTO TIVER EXECUCAO, FICA SALVO
+				Process p = Runtime.getRuntime().exec(chamada); // ENQUANTO TIVER EXECUCAO, FICA SALVO
 
-			InputStream fluxo = p.getInputStream(); // FLUXO DE ENTRADA DE DADOS
-			InputStreamReader leitor = new InputStreamReader(fluxo); // ELE LÊ E TROCA PARA STRING
+				InputStream fluxo = p.getInputStream(); // FLUXO DE ENTRADA DE DADOS
+				InputStreamReader leitor = new InputStreamReader(fluxo); // ELE LÊ E TROCA PARA STRING
 
-			BufferedReader buffer = new BufferedReader(leitor); // CONVERTENDO, SALVA NO BUFFER
+				BufferedReader buffer = new BufferedReader(leitor); // CONVERTENDO, SALVA NO BUFFER
 
-			// LENDO A PRIMEIRA LINHA DO BUFFER
-			String linha = buffer.readLine(); // APÓS ISSO, DESCARTA
+				// LENDO A PRIMEIRA LINHA DO BUFFER
+				String linha = buffer.readLine(); // APÓS ISSO, DESCARTA
 
-			// ACALMAR O USUÁRIO
-			System.out.println("\nPing está sendo realizado...");
-			System.out.println("\nAguardando média...");
-
-			// VERIFICAR LINHAS DE SAIDA
-			while (linha != null) {
-				if (linha.contains("dia =")) { // EXIBE O VALOR DA PARTE DEBAIXO -> MÉDIA
-					String[] partes = linha.split(" ");
-
-					// TEMPO MEDIO DO PING
-					for (String parts : partes) {
-						if (!parts.contains("ms,") && parts.contains("ms")) {
-							System.out.println("\nMedia: " + parts);
-
-						}
-					}
-				}
-				linha = buffer.readLine();
-			}
-
-			// SE FOR NO LINUX, VAI PUXAR ESSE IF:
-			if (chamada == "PING -4 -c 10 www.google.com.br") {
+				// ACALMAR O USUÁRIO
+				System.out.println("\nPing está sendo realizado...");
+				System.out.println("\nAguardando média...");
 
 				// VERIFICAR LINHAS DE SAIDA
 				while (linha != null) {
@@ -165,20 +144,67 @@ public class RedesController {
 								System.out.println("\nMedia: " + parts);
 
 							}
-							linha = buffer.readLine();
 						}
-
-						// TERMINOU? -> FECHAR TUDO
-						buffer.close();
-						leitor.close();
-						fluxo.close();
-
 					}
+
+					linha = buffer.readLine();
 				}
+
+				buffer.close();
+				leitor.close();
+				fluxo.close();
+
+			} catch (Exception e) {
+				e.printStackTrace(); // EXIBIR MSG DE ERRO
 			}
 
-		} catch (Exception e) {
-			e.printStackTrace();
+			// --------------------------------VALIDACAO LINUX
+
+		} else {
+
+			chamada = "PING -4 -c 10 www.google.com.br"; // LINUX
+
+			try {
+
+				Process p = Runtime.getRuntime().exec(chamada); // ENQUANTO TIVER EXECUCAO, FICA SALVO
+
+				InputStream fluxo = p.getInputStream(); // FLUXO DE ENTRADA DE DADOS
+				InputStreamReader leitor = new InputStreamReader(fluxo); // ELE LÊ E TROCA PARA STRING
+
+				BufferedReader buffer = new BufferedReader(leitor); // CONVERTENDO, SALVA NO BUFFER
+
+				// LENDO A PRIMEIRA LINHA DO BUFFER
+				String linha = buffer.readLine(); // APÓS ISSO, DESCARTA
+
+				// ACALMAR O USUÁRIO
+				System.out.println("\nPing está sendo realizado...");
+				System.out.println("\nAguardando média...");
+
+				// VERIFICAR LINHAS DE SAIDA
+				while (linha != null) {
+					if (linha.contains("dia =")) { // EXIBE O VALOR DA PARTE DEBAIXO -> MÉDIA
+						String[] partes = linha.split(" ");
+
+						// TEMPO MEDIO DO PING
+						for (String parts : partes) {
+							if (!parts.contains("ms,") && parts.contains("ms")) {
+								System.out.println("\nMedia: " + parts);
+
+							}
+						}
+					}
+
+					linha = buffer.readLine();
+				}
+
+				// TERMINOU? -> FECHAR TUDO
+				buffer.close();
+				leitor.close();
+				fluxo.close();
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }
